@@ -225,20 +225,27 @@
 
   <!-- ==================== LIVE FROM THE GARAGE ==================== -->
   <div id="garage-live" style="font-family:'Special Elite', monospace; max-width:42rem; margin:30px auto 0; background:var(--panel); border:1.5px solid var(--line); border-radius:18px 7px 20px 9px / 9px 20px 7px 18px; padding:16px 18px;">
-    <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
-      <span id="gl-dot" style="width:9px; height:9px; border-radius:50%; background:var(--ink-soft); flex:none;"></span>
-      <span style="font-size:.78rem; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-soft);">Live from the garage</span>
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px; padding-bottom:9px; border-bottom:2px dashed var(--line-2);">
+      <span id="gl-dot" style="width:10px; height:10px; border-radius:50%; background:var(--ink-soft); flex:none;"></span>
+      <span id="gl-live" style="font-size:.78rem; letter-spacing:.16em; text-transform:uppercase;">Live</span>
+      <span style="font-size:.78rem; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-soft);">from the garage</span>
     </div>
     <div style="display:flex; flex-wrap:wrap; gap:16px 32px;">
-      <div><div id="gl-hash" style="color:var(--ink); font-size:1.3rem;">&mdash;</div><div style="color:var(--ink-soft); font-size:.72rem; letter-spacing:.1em; text-transform:uppercase;">hashrate</div></div>
-      <div><div id="gl-best" style="color:var(--ink); font-size:1.3rem;">&mdash;</div><div style="color:var(--ink-soft); font-size:.72rem; letter-spacing:.1em; text-transform:uppercase;">best share</div></div>
-      <div><div id="gl-workers" style="color:var(--ink); font-size:1.3rem;">&mdash;</div><div style="color:var(--ink-soft); font-size:.72rem; letter-spacing:.1em; text-transform:uppercase;">miners on</div></div>
+      <div><div id="gl-hash" style="color:var(--ink); font-size:1.45rem;">&mdash;</div><div style="color:var(--ink-soft); font-size:.72rem; letter-spacing:.1em; text-transform:uppercase;">hashrate</div></div>
+      <div><div id="gl-best" style="color:var(--ink); font-size:1.45rem;">&mdash;</div><div style="color:var(--ink-soft); font-size:.72rem; letter-spacing:.1em; text-transform:uppercase;">best share</div></div>
+      <div><div id="gl-workers" style="color:var(--ink); font-size:1.45rem;">&mdash;</div><div style="color:var(--ink-soft); font-size:.72rem; letter-spacing:.1em; text-transform:uppercase;">miners on</div></div>
     </div>
     <div id="gl-note" style="color:var(--ink-soft); font-size:.72rem; margin-top:10px;">connecting&hellip;</div>
   </div>
   <style>
-    @keyframes gl-pulse { 0%{box-shadow:0 0 0 0 rgba(127,201,127,.5);} 70%{box-shadow:0 0 0 8px rgba(127,201,127,0);} 100%{box-shadow:0 0 0 0 rgba(127,201,127,0);} }
-    #gl-dot.on { background:#7fc97f; animation: gl-pulse 2.2s infinite; }
+    @keyframes gl-pulse {
+      0%   { box-shadow: 0 0 0 0 rgba(247,147,26,.65), 0 0 10px rgba(247,147,26,.5); }
+      70%  { box-shadow: 0 0 0 11px rgba(247,147,26,0), 0 0 10px rgba(247,147,26,.5); }
+      100% { box-shadow: 0 0 0 0 rgba(247,147,26,0), 0 0 10px rgba(247,147,26,.5); }
+    }
+    @keyframes gl-blink { 0%, 100% { opacity: 1; } 50% { opacity: .3; } }
+    #gl-dot.on { background: #f7931a; animation: gl-pulse 1.6s infinite; }
+    #gl-live { display: none; color: #f7931a; animation: gl-blink 1.6s infinite; }
   </style>
   <script>
   (function () {
@@ -252,6 +259,7 @@
     }
     function offline(msg) {
       document.getElementById("gl-dot").classList.remove("on");
+      document.getElementById("gl-live").style.display = "none";
       document.getElementById("gl-note").textContent = msg;
     }
     function tick() {
@@ -261,6 +269,7 @@
         document.getElementById("gl-best").textContent = d.best || "\u2014";
         document.getElementById("gl-workers").textContent = (d.workers != null) ? d.workers : "\u2014";
         document.getElementById("gl-dot").classList.add("on");
+        document.getElementById("gl-live").style.display = "inline";
         document.getElementById("gl-note").textContent = "solo mining on Parasite \u00b7 last share " + (d.last || "\u2014") + " \u00b7 refreshes every minute";
       }).catch(function () { offline("miners napping \u2014 stats unavailable"); });
     }
